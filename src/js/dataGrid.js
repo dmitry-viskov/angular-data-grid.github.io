@@ -39,7 +39,6 @@
 
             $scope.$watchCollection('_gridOptions.data', function (newValue) {
                 if (newValue && newValue.length > -1) {
-                    $scope.sortCache = {};
                     $scope.filtered = $scope._gridOptions.data.slice();
                     $scope.filters.forEach(function (filter) {
                         if (filter.filterType === 'select') {
@@ -246,13 +245,7 @@
                 //TO REMOVE ?
                 $scope._time = {};
 
-                if ($scope.sortOptions.predicate && $scope.sortCache && $scope.sortCache.predicate === $scope.sortOptions.predicate
-                    && $scope.sortCache.direction === $scope.sortOptions.direction) {
-                    $scope.filtered = $scope.sortCache.data.slice();
-                    sorted = true;
-                } else {
-                    $scope.filtered = $scope._gridOptions.data.slice();
-                }
+                $scope.filtered = $scope._gridOptions.data.slice();
 
                 $scope._time.copy = Date.now() - time;
                 var time2 = Date.now();
@@ -260,14 +253,7 @@
                 $scope._time.filters = Date.now() - time2;
                 var time3 = Date.now();
 
-                if ($scope.sortOptions.predicate && !sorted) {
-                    $scope.filtered = $filter('orderBy')($scope.filtered, $scope.sortOptions.predicate, $scope.sortOptions.direction === 'desc');
-                    $scope.sortCache = {
-                        data: $scope.filtered.slice(),
-                        predicate: $scope.sortOptions.predicate,
-                        direction: $scope.sortOptions.direction
-                    }
-                }
+                $scope.filtered = $filter('orderBy')($scope.filtered, $scope.sortOptions.predicate, $scope.sortOptions.direction === 'desc');
                 $scope._time.sort = Date.now() - time3;
                 $scope._time.all = Date.now() - time;
                 $scope.paginationOptions.totalItems = $scope.filtered.length;
